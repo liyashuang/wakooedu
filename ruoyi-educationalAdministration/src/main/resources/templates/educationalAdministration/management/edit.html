@@ -86,11 +86,11 @@
                 url: "http://localhost:80/province",
                 type: 'get',
                 success: function (res) {
-                    // console.log(res)
-                    // var selectElement = $("#province"); // 根据你的实际情况选择正确的 select 元素
-                    // for (var i = 0; i < res.districts.length; i++) {
-                    //     selectElement.append('<option value="' + res.districts[i].code + '">' + res.districts[i].name + '</option>');
-                    // }
+                    console.log(res)
+                    var selectElement = $("#province"); // 根据你的实际情况选择正确的 select 元素
+                    for (var i = 0; i < res.districts.length; i++) {
+                        selectElement.append('<option value="' + res.districts[i].code + '">' + res.districts[i].name + '</option>');
+                    }
                 }
             });
         }
