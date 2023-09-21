@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改校区管理')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-management-edit" th:object="${campusManagement}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">校区名称：</label>
+                <div class="col-sm-8">
+                    <input name="campusName" th:field="*{campusName}" class="form-control" type="text">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label" id="font-noraml">省：</label>
+                <div class="col-sm-8">
+                    <select class="form-control" name="province" id="province">
+                        <option th:each="option : ${campusManagement.provinces}"
+                                th:value="${option}"
+                                th:selected="${option eq province}"
+                                th:text="${option}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" id="font-city">城市：</label>
+                <div class="col-sm-8">
+                    <select class="form-control" name="city" id="city">
+                        <option th:value="${campusManagement.citys}" th:field="*{city}" >[[*{city}]]</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" id="font-queryCity">区县：</label>
+                <div class="col-sm-8">
+                    <select class="form-control" id="district" name="district">
+                        <option th:value="${campusManagement.districts}" th:field="*{district}">[[*{district}]]</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">校区状态：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('sys_normal_disable')}">
+                        <input type="radio" th:id="${dict.dictCode}" name="status" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                        <label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">详细地址：</label>
+                <div class="col-sm-8">
+                    <textarea name="address" class="form-control">[[*{address}]]</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <textarea name="remark" class="form-control">[[*{remark}]]</textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "educationalAdministration/management";
+        $("#form-management-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-management-edit').serialize());
+            }
+        }
+        let province=document.getElementById("province");
+        province.onclick=function () {
+            $.ajax({
+                url: "http://localhost:80/province",
+                type: 'get',
+                success: function (res) {
+                    var selectElement = $("#province"); // 根据你的实际情况选择正确的 select 元素
+                    for (var i = 0; i < res.districts.length; i++) {
+                        selectElement.append('<option value="' + res.districts[i].code + '">' + res.districts[i].name + '</option>');
+                    }
+                }
+            });
+        }
+        var elementById = document.getElementById("province");
+        elementById.onchange = function () {
+            var selectedIndex = this.options.selectedIndex;
+            var option = this.options[selectedIndex].value;
+            $.ajax({
+                url: "http://localhost:80/city",
+                type: 'get',
+                data: {
+                    code: option
+                },
+                success: function (res) {
+                    var selectElement = $("#city"); // 根据你的实际情况选择正确的 select 元素
+                    selectElement.empty(); // 清空已有的选项
+                    selectElement.append('<option value="">--请选择城市--</option>'); // 添加默认的选项
+                    for (var i = 0; i < res.districts.length; i++) {
+                        selectElement.append('<option value="' + res.districts[i].code + '">' + res.districts[i].name + '</option>');
+                    }
+                    $.ajax({
+                        url: "http://localhost:80/queryCity",
+                        type: 'get',
+                        data: {
+                            code: option
+                        },
+                        success: function (res) {
+                            var selectElement = $("#district"); // 根据你的实际情况选择正确的 select 元素
+                            selectElement.empty(); // 清空已有的选项
+                            selectElement.append('<option value="">--请选择区县--</option>'); // 添加默认的选项
+                            for (var i = 0; i < res.districts.length; i++) {
+                                selectElement.append('<option value="' + res.districts[i].code + '">' + res.districts[i].name + '</option>');
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        var elementById = document.getElementById("city");
+        elementById.onchange = function () {
+            var selectedIndex = this.options.selectedIndex;
+            var option = this.options[selectedIndex].value;
+            $.ajax({
+                url: "http://localhost:80/queryCity",
+                type: 'get',
+                data: {
+                    code: option
+                },
+                success: function (res) {
+                    var selectElement = $("#district"); // 根据你的实际情况选择正确的 select 元素
+                    selectElement.empty(); // 清空已有的选项
+                    selectElement.append('<option value="">--请选择区县--</option>'); // 添加默认的选项
+                    for (var i = 0; i < res.districts.length; i++) {
+                        selectElement.append('<option value="' + res.districts[i].code + '">' + res.districts[i].name + '</option>');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

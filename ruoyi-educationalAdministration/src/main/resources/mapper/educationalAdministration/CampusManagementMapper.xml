@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.educationalAdministration.mapper.CampusManagementMapper">
+    
+    <resultMap type="CampusManagement" id="CampusManagementResult">
+        <result property="id"    column="id"    />
+        <result property="campusName"    column="campus_name"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="district"    column="district"    />
+        <result property="address"    column="address"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectVo">
+        select id,user_id, dept_id,campus_name, ct.province as provinces,ct.city as citys,ct.district as districts,pv.name AS province, dd.name AS city, di.name AS district, address, status, create_by, create_time, update_by, update_time, remark
+        from campus_management ct
+                 JOIN district_info pv ON ct.province = pv.CODE
+                 JOIN district_info dd ON ct.city = dd.CODE
+                 JOIN district_info di ON ct.district=di.CODE
+    </sql>
+    <sql id="selectCampusVo">
+        select id,user_id , campus_name, province, city, district, address, status, create_by, create_time, update_by, update_time, remark from campus_management ct
+    </sql>
+
+    <sql id="selectCampusManagementVo">
+        select id, campus_name, province, city, district, address, status, create_by, create_time, update_by, update_time, remark from campus_management ct
+    </sql>
+
+    <select id="selectCampusManagementList" parameterType="CampusManagement" resultMap="CampusManagementResult">
+        <include refid="selectVo"/>
+        <where>
+            ct.del_flag = '0'
+            <if test="id != null "> and id = #{id}</if>
+            <if test="campusName != null  and campusName != ''"> and campus_name = #{campusName}</if>
+            <if test="province != null  and province != ''"> and ct.province = #{province}</if>
+            <if test="city != null  and city != ''"> and ct.city = #{city}</if>
+            <if test="district != null  and district != ''"> and ct.district = #{district}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
+            <if test="createTime != null "> and create_time = #{createTime}</if>
+            ${params.dataScope}
+        </where>
+    </select>
+    
+    <select id="selectCampusManagementById" parameterType="CampusManagement" resultMap="CampusManagementResult">
+        <include refid="selectVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCampusManagement" parameterType="CampusManagement" useGeneratedKeys="true" keyProperty="id">
+        insert into campus_management
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="campusName != null">campus_name,</if>
+            <if test="province != null">province,</if>
+            <if test="city != null">city,</if>
+            <if test="district != null">district,</if>
+            <if test="address != null">address,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="campusName != null">#{campusName},</if>
+            <if test="province != null">#{province},</if>
+            <if test="city != null">#{city},</if>
+            <if test="district != null">#{district},</if>
+            <if test="address != null">#{address},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCampusManagement" parameterType="CampusManagement">
+        update campus_management
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null">id = #{id},</if>
+            <if test="campusName != null">campus_name = #{campusName},</if>
+            <if test="province != null">province = #{province},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="district != null">district = #{district},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCampusManagementById" parameterType="Long">
+        update campus_management set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteCampusManagementByIds" parameterType="String">
+        update campus_management set del_flag = '2' where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
