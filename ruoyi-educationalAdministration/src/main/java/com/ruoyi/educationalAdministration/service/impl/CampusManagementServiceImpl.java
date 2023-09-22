@@ -3,7 +3,10 @@ package com.ruoyi.educationalAdministration.service.impl;
 import java.util.List;
 
 import com.ruoyi.common.annotation.DataScope;
+import com.ruoyi.common.constant.UserConstants;
+import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.educationalAdministration.mapper.CampusManagementMapper;
@@ -98,5 +101,24 @@ public class CampusManagementServiceImpl implements ICampusManagementService
     public int deleteCampusManagementById(Long id)
     {
         return campusManagementMapper.deleteCampusManagementById(id);
+    }
+
+    /**
+     *  校验校区管理名称是否唯一
+     * @param campusManagement 校区管理名称
+     * @return 校区管理
+     */
+    @Override
+    public Boolean campusNameUnique(CampusManagement campusManagement) {
+
+        {
+            Long roleId = StringUtils.isNull(campusManagement.getId()) ? -1L : campusManagement.getId();
+            CampusManagement info = campusManagementMapper.campusNameUnique(campusManagement.getCampusName());
+            if (StringUtils.isNotNull(info) && info.getId().longValue() != roleId.longValue())
+            {
+                return UserConstants.NOT_UNIQUE;
+            }
+            return UserConstants.UNIQUE;
+        }
     }
 }

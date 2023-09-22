@@ -194,6 +194,7 @@
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
         <module>ruoyi-educationalAdministration</module>
+        <module>ruoyi-schoolPersonnelManagement</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -29,12 +29,10 @@ public class siteController extends BaseController {
 
     @Operation(summary = "查询所有省份")
     @GetMapping("/province")
-    public Map<String,Object> province(Model model) {
+    public Map<String,Object> province() {
         Map<String,Object> map=new HashMap<>(50);
         List<District> districts = districtService.queryProvince();
         map.put("districts",districts);
-        System.out.println(map);
-        model.addAttribute("districts", districts);
         return map;
     }
     @Operation(summary = "查询城市或地区")

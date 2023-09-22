@@ -1,7 +1,10 @@
 package com.ruoyi.educationalAdministration.service;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.educationalAdministration.domain.CampusManagement;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 /**
  * 校区管理Service接口
@@ -58,4 +61,11 @@ public interface ICampusManagementService
      * @return 结果
      */
     public int deleteCampusManagementById(Long id);
+
+    /**
+     *  校验校区管理名称是否唯一
+     * @param campusManagement 校区管理名称
+     * @return 校区管理
+     */
+    public Boolean campusNameUnique(CampusManagement campusManagement);
 }

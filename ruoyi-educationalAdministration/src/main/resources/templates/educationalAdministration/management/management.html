@@ -98,7 +98,7 @@
 <script th:inline="javascript">
     var editFlag = [[${@permission.hasPermi('educationalAdministration:management:edit')}]];
     var removeFlag = [[${@permission.hasPermi('educationalAdministration:management:remove')}]];
-    var datas = [[${@dict.getType('sys_common_status')}]];
+    var datas = [[${@dict.getType('sys_normal_disable')}]];
     var prefix = ctx + "educationalAdministration/management";
     $(document).ready(function () {
         $.ajax({
@@ -111,7 +111,6 @@
                 for (var i = 0; i < res.districts.length; i++) {
                     selectElement.append('<option value="' + res.districts[i].code + '">' + res.districts[i].name + '</option>');
                 }
-
             }
         });
     });

@@ -10,26 +10,21 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label">校区名称：</label>
                 <div class="col-sm-8">
-                    <input name="campusName" th:field="*{campusName}" class="form-control" type="text">
+                    <input name="campusName" th:field="*{campusName}" class="form-control" type="text" required>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-sm-3 control-label" id="font-noraml">省：</label>
                 <div class="col-sm-8">
-                    <select class="form-control" name="province" id="province">
-<!--                        <option id="provice" th:value="${campusManagement.provinces}" th:field="*{province}" >[[*{province}]]</option>-->
-                        <option th:each="district : ${districts}"
-                                th:value="${district.code}"
-                                th:text="${district.name}">
-                        </option>
+                    <select class="form-control" name="province" id="province" required>
                     </select>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" id="font-city">城市：</label>
                 <div class="col-sm-8">
-                    <select class="form-control" name="city" id="city">
+                    <select class="form-control" name="city" id="city" required>
                         <option th:value="${campusManagement.citys}" th:field="*{city}" >[[*{city}]]</option>
                     </select>
                 </div>
@@ -37,7 +32,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label" id="font-queryCity">区县：</label>
                 <div class="col-sm-8">
-                    <select class="form-control" id="district" name="district">
+                    <select class="form-control" id="district" name="district" required>
                         <option th:value="${campusManagement.districts}" th:field="*{district}">[[*{district}]]</option>
                     </select>
                 </div>
@@ -72,6 +67,29 @@
     <script th:inline="javascript">
         var prefix = ctx + "educationalAdministration/management";
         $("#form-management-edit").validate({
+            onkeyup: false,
+            rules:{
+                campusName:{
+                    remote: {
+                        url: prefix + "/checkCampusNameUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "id": function() {
+                                return $("#id").val();
+                            },
+                            "campusName": function() {
+                                return $.common.trim($("#campusName").val());
+                            }
+                        }
+                    }
+                },
+            },
+            messages: {
+                "campusName": {
+                    remote: "角色名称已经存在"
+                },
+            },
             focusCleanup: true
         });
 
@@ -81,7 +99,7 @@
             }
         }
         let province=document.getElementById("province");
-        province.onclick=function () {
+        $(document).ready(function () {
             $.ajax({
                 url: "http://localhost:80/province",
                 type: 'get',
@@ -89,11 +107,11 @@
                     console.log(res)
                     var selectElement = $("#province"); // 根据你的实际情况选择正确的 select 元素
                     for (var i = 0; i < res.districts.length; i++) {
-                        selectElement.append('<option value="' + res.districts[i].code + '">' + res.districts[i].name + '</option>');
+                        selectElement.append('<option value="' + res.districts[i].code + '"' + (res.districts[i].code == [[${campusManagement.provinces}]] ? 'selected' : '') + '>' + res.districts[i].name + '</option>');
                     }
                 }
             });
-        }
+        });
         var elementById = document.getElementById("province");
         elementById.onchange = function () {
             var selectedIndex = this.options.selectedIndex;

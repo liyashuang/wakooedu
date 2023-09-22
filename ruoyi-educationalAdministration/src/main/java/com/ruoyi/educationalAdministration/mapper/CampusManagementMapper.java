@@ -1,6 +1,8 @@
 package com.ruoyi.educationalAdministration.mapper;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.educationalAdministration.domain.CampusManagement;
 
 /**
@@ -58,4 +60,11 @@ public interface CampusManagementMapper
      * @return 结果
      */
     public int deleteCampusManagementByIds(String[] ids);
+
+    /**
+     *  校验校区管理名称是否唯一
+     * @param campusName 校区管理名称
+     * @return 校区管理
+     */
+    public CampusManagement campusNameUnique(String campusName);
 }
