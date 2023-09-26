@@ -7,8 +7,8 @@ import com.ruoyi.educationalAdministration.service.DistrictService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +21,7 @@ import java.util.Map;
  * @author HASEE
  */
 @RestController
+@RequestMapping("/educationalAdministration/management")
 public class siteController extends BaseController {
 
     @Resource
@@ -30,7 +31,7 @@ public class siteController extends BaseController {
     @Operation(summary = "查询所有省份")
     @GetMapping("/province")
     public Map<String,Object> province() {
-        Map<String,Object> map=new HashMap<>(50);
+        Map<String,Object> map=new HashMap<>();
         List<District> districts = districtService.queryProvince();
         map.put("districts",districts);
         return map;

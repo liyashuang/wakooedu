@@ -101,7 +101,7 @@
         let province=document.getElementById("province");
         $(document).ready(function () {
             $.ajax({
-                url: "http://localhost:80/province",
+                url: prefix+"/province",
                 type: 'get',
                 success: function (res) {
                     console.log(res)
@@ -117,7 +117,7 @@
             var selectedIndex = this.options.selectedIndex;
             var option = this.options[selectedIndex].value;
             $.ajax({
-                url: "http://localhost:80/city",
+                url: prefix+"/city",
                 type: 'get',
                 data: {
                     code: option
@@ -130,7 +130,7 @@
                         selectElement.append('<option value="' + res.districts[i].code + '">' + res.districts[i].name + '</option>');
                     }
                     $.ajax({
-                        url: "http://localhost:80/queryCity",
+                        url: prefix+"/queryCity",
                         type: 'get',
                         data: {
                             code: option
@@ -153,7 +153,7 @@
             var selectedIndex = this.options.selectedIndex;
             var option = this.options[selectedIndex].value;
             $.ajax({
-                url: "http://localhost:80/queryCity",
+                url: prefix+"/queryCity",
                 type: 'get',
                 data: {
                     code: option

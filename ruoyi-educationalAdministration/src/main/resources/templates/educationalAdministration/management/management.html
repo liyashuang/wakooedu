@@ -100,9 +100,10 @@
     var removeFlag = [[${@permission.hasPermi('educationalAdministration:management:remove')}]];
     var datas = [[${@dict.getType('sys_normal_disable')}]];
     var prefix = ctx + "educationalAdministration/management";
+
     $(document).ready(function () {
         $.ajax({
-            url: "http://localhost:80/province",
+            url: prefix+"/province",
             type: 'get',
             success: function (res) {
                 var selectElement = $(".form-control"); // 根据你的实际情况选择正确的 select 元素
@@ -120,7 +121,7 @@
         var selectedIndex = this.options.selectedIndex;
         var option = this.options[selectedIndex].value;
         $.ajax({
-            url: "http://localhost:80/city",
+            url: prefix+"/city",
             type: 'get',
             data: {
                 code: option
@@ -133,7 +134,7 @@
                     selectElement.append('<option value="' + res.districts[i].code + '">' + res.districts[i].name + '</option>');
                 }
                 $.ajax({
-                    url: "http://localhost:80/queryCity",
+                    url: prefix+"/queryCity",
                     type: 'get',
                     data:{
                         code:option
@@ -156,7 +157,7 @@
         var selectedIndex = this.options.selectedIndex;
         var option = this.options[selectedIndex].value;
         $.ajax({
-            url: "http://localhost:80/queryCity",
+            url: prefix+"/queryCity",
             type: 'get',
             data:{
                 code:option

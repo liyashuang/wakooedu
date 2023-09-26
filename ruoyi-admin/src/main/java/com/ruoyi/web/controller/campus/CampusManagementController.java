@@ -2,14 +2,12 @@ package com.ruoyi.web.controller.campus;
 
 import java.util.List;
 
-import com.ruoyi.common.core.domain.entity.SysRole;
+import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.ShiroUtils;
-import com.ruoyi.framework.shiro.util.AuthorizationUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -83,6 +81,7 @@ public class CampusManagementController extends BaseController
     {
         return prefix + "/add";
     }
+
     /**
      * 新增保存校区管理
      */
@@ -92,10 +91,6 @@ public class CampusManagementController extends BaseController
     @ResponseBody
     public AjaxResult addSave(CampusManagement campusManagement)
     {
-        if (!campusManagementService.campusNameUnique(campusManagement))
-        {
-            return error("新增校区'" + campusManagement.getCampusName() + "'失败，校区名称已存在");
-        }
         campusManagement.setCreateBy(ShiroUtils.getLoginName());
         campusManagement.setUserId(getUserId());
         campusManagement.setDeptId(getSysUser().getDeptId());
@@ -123,10 +118,6 @@ public class CampusManagementController extends BaseController
     @ResponseBody
     public AjaxResult editSave(CampusManagement campusManagement)
     {
-        if (!campusManagementService.campusNameUnique(campusManagement))
-        {
-            return error("新增校区'" + campusManagement.getCampusName() + "'失败，校区名称已存在");
-        }
         return toAjax(campusManagementService.updateCampusManagement(campusManagement));
     }
 
@@ -141,15 +132,5 @@ public class CampusManagementController extends BaseController
     {
         System.out.println(ids);
         return toAjax(campusManagementService.deleteCampusManagementByIds(ids));
-    }
-
-    /**
-     * 校验角色名称
-     */
-    @PostMapping("/checkCampusNameUnique")
-    @ResponseBody
-    public boolean checkCampusNameUnique(CampusManagement campusManagement)
-    {
-        return campusManagementService.campusNameUnique(campusManagement);
     }
 }

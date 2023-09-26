@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.educationalAdministration.mapper.HeadPersonnelMapper">
+
+    <resultMap type="HeadPersonnel" id="HeadPersonnelResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="phone" column="phone"/>
+        <result property="campusName" column="campus_name"/>
+        <result property="campusUserRelation" column="student_user_name"/>
+        <result property="courseSummary" column="course_summary"/>
+        <result property="personStatus" column="person_status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+    </resultMap>
+
+    <sql id="selectHeadVo">
+        select hl.id,
+               hl.name,
+               hl.phone,
+               ct.campus_name,
+               ps.student_user_name,
+               hl.course_summary,
+               hl.person_status,
+               hl.del_flag,
+               hl.create_by,
+               hl.create_time,
+               hl.update_by,
+               hl.update_time,
+               hl.remark,
+               hl.dept_id,
+               hl.user_id
+        from head_personnel hl
+                 JOIN campus_management ct ON hl.campus_id = ct.id
+                 JOIN personnel_student ps ON ps.id = hl.campus_user_relation
+    </sql>
+
+    <sql id="selectHeadPersonnelVo">
+        select id,
+               name,
+               phone,
+               campus_id as campus_name,
+               campus_user_relation as student_user_name,
+               course_summary,
+               person_status,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark,
+               dept_id,
+               user_id
+        from head_personnel hl
+    </sql>
+
+    <sql id="selectHead">
+        select ct.id, ct.campus_name, ct.dept_id, ct.user_id
+        from head_personnel hl
+        JOIN campus_management ct ON hl.campus_id = ct.id
+    </sql>
+    <sql id="selectStudentUser">
+        select ps.id,
+               ps.student_user_name,
+               ps.dept_id, ps.user_id
+        from head_personnel hl
+                 JOIN campus_management ct ON hl.campus_id = ct.id
+                 JOIN personnel_student ps ON ps.id = hl.campus_user_relation
+    </sql>
+    <sql id="selectStudent">
+        SELECT
+            ps.id,
+            ps.student_user_name,
+            ps.dept_id,
+            ps.user_id
+        FROM personnel_student ps
+    </sql>
+    <sql id="selectCampus">
+        SELECT cm.id,cm.campus_name,cm.user_id,cm.dept_id FROM campus_management cm
+    </sql>
+    <select id="selectHeadPersonnelList" parameterType="HeadPersonnel" resultMap="HeadPersonnelResult">
+        <include refid="selectHeadVo"/>
+        <where>
+            <if test="name != null  and name != ''">and hl.name like concat('%', #{name}, '%')</if>
+            <if test="phone != null  and phone != ''">and hl.phone = #{phone}</if>
+            <if test="campusName != null and campusName != ''">and hl.campus_id = #{campusName}</if>
+            <if test="campusUserRelation != null and campusUserRelation != ''">and hl.campus_user_relation = #{campusUserRelation}</if>
+            <if test="courseSummary != null  and courseSummary != ''">and hl.course_summary = #{courseSummary}</if>
+            <if test="personStatus != null  and personStatus != ''">and hl.person_status = #{personStatus}</if>
+            <if test="createBy != null  and createBy != ''">and hl.create_by = #{createBy}</if>
+            <if test="createTime != null ">and hl.create_time = #{createTime}</if>
+            <if test="remark != null  and remark != ''">and hl.remark = #{remark}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(hl.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(hl.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            ${params.dataScope}
+        </where>
+    </select>
+
+    <select id="selectHeadPersonnelById" parameterType="Long" resultMap="HeadPersonnelResult">
+        <include refid="selectHeadPersonnelVo"/>
+        where id = #{id}
+    </select>
+    <select id="queryPersonnelList" resultType="com.ruoyi.educationalAdministration.domain.HeadPersonnel"
+            resultMap="HeadPersonnelResult">
+        <include refid="selectCampus"/>
+        <where>${params.dataScope}</where>
+        GROUP BY cm.campus_name
+    </select>
+    <select id="getTheSchoolUserRelationship" parameterType="HeadPersonnel" resultMap="HeadPersonnelResult">
+        <include refid="selectStudentUser"/>
+        ${params.dataScope}
+        GROUP BY ps.student_user_name
+    </select>
+    <select id="queryAllCampusRelationships" parameterType="HeadPersonnel" resultMap="HeadPersonnelResult">
+        <include refid="selectStudent"/>
+    </select>
+    <select id="checkPhoneUnique" parameterType="String" resultMap="HeadPersonnelResult">
+        select id, phone from head_personnel where phone=#{phoneNumber} and del_flag = '0' limit 1
+    </select>
+    <select id="queriedSchool" resultMap="HeadPersonnelResult">
+        <include refid="selectHead"/>
+        GROUP BY ct.campus_name
+        ${params.dataScope}
+    </select>
+
+    <insert id="insertHeadPersonnel" useGeneratedKeys="true" keyProperty="id">
+        insert into head_personnel(name, phone,campus_id,campus_user_relation,course_summary,person_status,create_by,create_time,update_by,update_time,remark,dept_id,user_id,sex,birthday) values
+        <foreach item="item" index="index" collection="headPersonnel" separator=",">
+            (#{item.name},#{item.phone},#{item.campusName},#{item.campusUserRelation},#{item.courseSummary},
+             #{item.personStatus},#{item.createBy},#{item.createTime},#{item.updateBy},#{item.updateTime},#{item.remark},#{item.deptId}
+            ,#{item.userId},#{item.sex},#{item.birthday})
+        </foreach>
+    </insert>
+
+    <update id="updateHeadPersonnel" parameterType="HeadPersonnel">
+        update head_personnel
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="campusName != null">campus_id = #{campusName},</if>
+            <if test="campusUserRelation != null">campus_user_relation = #{campusUserRelation},</if>
+            <if test="courseSummary != null and courseSummary != ''">course_summary = #{courseSummary},</if>
+            <if test="personStatus != null and personStatus != ''">person_status = #{personStatus},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHeadPersonnelById" parameterType="Long">
+        delete
+        from head_personnel
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteHeadPersonnelByIds" parameterType="String">
+        delete from head_personnel where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
