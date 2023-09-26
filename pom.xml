@@ -195,6 +195,7 @@
         <module>ruoyi-common</module>
         <module>ruoyi-educationalAdministration</module>
         <module>ruoyi-schoolPersonnelManagement</module>
+        <module>ruoyi-coursewareClassification</module>
     </modules>
     <packaging>pom</packaging>
 

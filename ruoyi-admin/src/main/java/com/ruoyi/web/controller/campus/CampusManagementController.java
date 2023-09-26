@@ -130,7 +130,6 @@ public class CampusManagementController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
-        System.out.println(ids);
         return toAjax(campusManagementService.deleteCampusManagementByIds(ids));
     }
 }

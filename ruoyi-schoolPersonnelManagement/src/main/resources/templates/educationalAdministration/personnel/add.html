@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-3 control-label">校区状态：</label>
+            <label class="col-sm-3 control-label is-required">校区状态：</label>
             <div class="col-sm-8">
                 <div class="radio-box" th:each="dict : ${@dict.getType('sys_normal_disable')}">
                     <input type="radio" th:id="${dict.dictCode}" name="personStatus" th:value="${dict.dictValue}" th:checked="${dict.default}">
@@ -47,9 +47,9 @@
             </div>
         </div>
          <div class="form-group">
-                <label class="col-sm-3 control-label">多行文本框：</label>
+                <label class="col-sm-3 control-label is-required">用户信息：</label>
                 <div class="col-sm-8">
-                    <textarea type="text" name="addUsers" class="form-control" placeholder="请输入文本"></textarea>
+                    <textarea type="text" name="addUsers" class="form-control" placeholder="请输入用户信息"></textarea>
                     <span>用户名 手机号 性别(男/女) 生日(2001-6-25) 以空格隔开 每个用户信息已换行隔开</span>
                 </div>
         </div>

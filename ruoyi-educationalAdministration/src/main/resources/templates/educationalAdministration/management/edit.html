@@ -8,21 +8,21 @@
         <form class="form-horizontal m" id="form-management-edit" th:object="${campusManagement}">
             <input name="id" th:field="*{id}" type="hidden">
             <div class="form-group">    
-                <label class="col-sm-3 control-label">校区名称：</label>
+                <label class="col-sm-3 control-label is-required">校区名称：</label>
                 <div class="col-sm-8">
                     <input name="campusName" th:field="*{campusName}" class="form-control" type="text" required>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label" id="font-noraml">省：</label>
+                <label class="col-sm-3 control-label is-required" id="font-noraml">省：</label>
                 <div class="col-sm-8">
                     <select class="form-control" name="province" id="province" required>
                     </select>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label" id="font-city">城市：</label>
+                <label class="col-sm-3 control-label is-required" id="font-city">城市：</label>
                 <div class="col-sm-8">
                     <select class="form-control" name="city" id="city" required>
                         <option th:value="${campusManagement.citys}" th:field="*{city}" >[[*{city}]]</option>
@@ -30,27 +30,25 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label" id="font-queryCity">区县：</label>
+                <label class="col-sm-3 control-label is-required" id="font-queryCity">区县：</label>
                 <div class="col-sm-8">
                     <select class="form-control" id="district" name="district" required>
                         <option th:value="${campusManagement.districts}" th:field="*{district}">[[*{district}]]</option>
                     </select>
                 </div>
             </div>
-
             <div class="form-group">
                 <label class="col-sm-3 control-label">校区状态：</label>
                 <div class="col-sm-8">
                     <div class="radio-box" th:each="dict : ${@dict.getType('sys_normal_disable')}">
-                        <input type="radio" th:id="${dict.dictCode}" name="status" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                        <input type="radio" th:id="${dict.dictCode}" name="status" th:value="${dict.dictValue}" th:field="*{status}">
                         <label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
                     </div>
                 </div>
             </div>
 
-
             <div class="form-group">
-                <label class="col-sm-3 control-label">详细地址：</label>
+                <label class="col-sm-3 control-label is-required">详细地址：</label>
                 <div class="col-sm-8">
                     <textarea name="address" class="form-control">[[*{address}]]</textarea>
                 </div>

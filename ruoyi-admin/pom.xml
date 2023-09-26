@@ -77,6 +77,11 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-schoolPersonnelManagement</artifactId>
             <version>4.7.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-coursewareClassification</artifactId>
+            <version>4.7.7</version>
             <scope>compile</scope>
         </dependency>
 

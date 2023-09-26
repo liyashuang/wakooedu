@@ -2,17 +2,20 @@ package com.ruoyi.web.controller.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.educationalAdministration.domain.CoursewareClassificationEdu;
+import com.ruoyi.educationalAdministration.service.ICoursewareClassificationEduService;
+import com.ruoyi.quartz.util.QiniuUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.config.ServerConfig;
@@ -79,16 +82,21 @@ public class CommonController
     {
         try
         {
+            System.out.println(file+"11111");
             // 上传文件路径
             String filePath = RuoYiConfig.getUploadPath();
+            System.out.println(filePath+"22222");
             // 上传并返回新文件名称
             String fileName = FileUploadUtils.upload(filePath, file);
+            System.out.println(fileName+"33333");
             String url = serverConfig.getUrl() + fileName;
+            System.out.println(url+"44444");
             AjaxResult ajax = AjaxResult.success();
             ajax.put("url", url);
             ajax.put("fileName", fileName);
             ajax.put("newFileName", FileUtils.getName(fileName));
             ajax.put("originalFilename", file.getOriginalFilename());
+            System.out.println(ajax+"555555");
             return ajax;
         }
         catch (Exception e)
@@ -161,6 +169,36 @@ public class CommonController
         catch (Exception e)
         {
             log.error("下载文件失败", e);
+        }
+    }
+    @Value("${qiniu.access-key}")// 七牛云存储的访问密钥
+    private String accessKey;
+    @Value("${qiniu.secret-key}")// 七牛云存储的秘钥
+    private String secretKey;
+    @Value("${qiniu.bucket-name}")// 存储空间名称
+    private String bucketName;
+    @Resource
+    private ICoursewareClassificationEduService iCoursewareClassificationEduService;
+
+    @PostMapping("/qiniu")
+    @ResponseBody
+    public AjaxResult qiniu(MultipartFile file, HttpServletRequest request) throws Exception
+    {
+        try
+        {
+            // 上传并返回新文件名称
+            String fileName = QiniuUtils.uploadAvatar(file, accessKey, secretKey, bucketName, "2023.6.21编程分类视频及图片/test",request);
+            String url = serverConfig.getUrl();
+            AjaxResult ajax = AjaxResult.success();
+            ajax.put("url", url);
+            ajax.put("fileName", fileName);
+            ajax.put("newFileName", FileUtils.getName(fileName));
+            ajax.put("originalFilename", file.getOriginalFilename());
+            return ajax;
+        }
+        catch (Exception e)
+        {
+            return AjaxResult.error(e.getMessage());
         }
     }
 }

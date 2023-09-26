@@ -140,3 +140,10 @@ xss:
 swagger:
   # 是否开启swagger
   enabled: true
+# 七牛
+qiniu:
+  access-key: qEcvaGP-gpW6BypGf0w75uEgbZgwpQMcbJxyDU75
+  secret-key: LKK0Sl38yKWV3hjc2vZ6nkoxGIqpiI-LL36uEMox
+  bucket-name: wkimage123
+  bucket-names: 2023.6.21编程分类视频及图片/test/
+  domain: cdn.wakoohome.com
