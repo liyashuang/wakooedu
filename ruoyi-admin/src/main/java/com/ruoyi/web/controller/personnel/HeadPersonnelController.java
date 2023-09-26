@@ -1,17 +1,16 @@
 package com.ruoyi.web.controller.personnel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.ShiroUtils;
-import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.educationalAdministration.domain.HeadPersonnel;
+import com.ruoyi.educationalAdministration.service.IHeadPersonnelService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -23,12 +22,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.educationalAdministration.domain.HeadPersonnel;
-import com.ruoyi.educationalAdministration.service.IHeadPersonnelService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+
+import javax.annotation.Resource;
 
 /**
  * 瓦酷人员管理Controller
@@ -42,7 +40,7 @@ public class HeadPersonnelController extends BaseController
 {
     private String prefix = "educationalAdministration/personnel";
 
-    @Autowired
+    @Resource
     private IHeadPersonnelService headPersonnelService;
 
     @RequiresPermissions("educationalAdministration:personnel:view")
@@ -95,7 +93,7 @@ public class HeadPersonnelController extends BaseController
     @Log(title = "瓦酷人员管理", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(@Validated HeadPersonnel headPersonnel,BindingResult result)
+    public AjaxResult addSave(@Validated HeadPersonnel headPersonnel, BindingResult result)
     {
         String[] s = headPersonnel.getAddUsers().trim().split("\\s+");
         String lastElement = s[s.length - 1].trim();
