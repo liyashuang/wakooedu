@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.educationalAdministration.mapper.CoursewareClassificationEduMapper">
+
+    <resultMap type="CoursewareClassificationEdu" id="CoursewareClassificationEduResult">
+        <result property="id" column="id"/>
+        <result property="parentCoursewareName" column="parent_courseware_name"/>
+        <result property="coursewareName" column="courseware_name"/>
+        <result property="coursewareDescription" column="courseware_description"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="sort" column="sort"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectCoursewareClassificationEduVo">
+        select cc.id,
+               ce.courseware_name as parent_courseware_name,
+               cc.courseware_name,
+               cc.courseware_description,
+               cc.image_url,
+               cc.sort,
+               cc.status,
+               cc.create_by,
+               cc.create_time,
+               cc.update_by,
+               cc.update_time,
+               cc.remark
+        from courseware_classification_edu cc
+        JOIN courseware_classification_edu ce ON cc.parent_courseware_name = ce.id
+    </sql>
+    <sql id="selectCourseware">
+        SELECT cc.parent_courseware_name as id,
+               ce.courseware_name,
+               cc.user_id,
+               cc.dept_id
+        FROM courseware_classification_edu cc
+        JOIN courseware_classification_edu ce ON cc.parent_courseware_name = ce.id
+    </sql>
+
+    <sql id="selectClass">
+        SELECT id,courseware_name
+        FROM courseware_classification_edu cc
+    </sql>
+
+    <sql id="selectSort">
+        SELECT sort
+        FROM courseware_classification_edu
+        GROUP BY sort
+    </sql>
+    <select id="selectCoursewareClassificationEduList" parameterType="CoursewareClassificationEdu"
+            resultMap="CoursewareClassificationEduResult">
+        <include refid="selectCoursewareClassificationEduVo"/>
+        <where>
+            cc.del_flag = '0'
+            <if test="parentCoursewareName != null and parentCoursewareName!=''">and cc.parent_courseware_name = #{parentCoursewareName}
+            </if>
+            <if test="coursewareName != null  and coursewareName != ''">and cc.id = #{coursewareName}
+            </if>
+            <if test="coursewareDescription != null  and coursewareDescription != ''">and cc.courseware_description like
+                concat('%', #{coursewareDescription}, '%')
+            </if>
+            <if test="imageUrl != null  and imageUrl != ''">and cc.image_url = #{imageUrl}</if>
+            <if test="sort != null ">and cc.sort = #{sort}</if>
+            <if test="status != null  and status != ''">and cc.status = #{status}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(cc.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(cc.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectCoursewareClassificationEduById" parameterType="Long"
+            resultMap="CoursewareClassificationEduResult">
+        <include refid="selectCoursewareClassificationEduVo"/>
+        where cc.id = #{id}
+    </select>
+    <select id="getsAllParentCategories" parameterType="CoursewareClassificationEdu"
+            resultMap="CoursewareClassificationEduResult">
+        <include refid="selectCourseware"/>
+        GROUP BY ce.courseware_name
+        order by cc.id
+    </select>
+    <select id="getsAllSubclassCourseNames" parameterType="CoursewareClassificationEdu" resultMap="CoursewareClassificationEduResult">
+        <include refid="selectClass"/>
+        <where>
+            and cc.id!=0
+        </where>
+    </select>
+    <select id="getAllOrder" parameterType="CoursewareClassificationEdu" resultMap="CoursewareClassificationEduResult">
+        <include refid="selectSort"/>
+    </select>
+    <select id="checkCampusNameUnique" parameterType="CoursewareClassificationEdu" resultMap="CoursewareClassificationEduResult">
+        select id,courseware_name
+        from courseware_classification_edu where courseware_name=#{name} and del_flag = '0' limit 1;
+    </select>
+
+    <insert id="insertCoursewareClassificationEdu" parameterType="CoursewareClassificationEdu" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into courseware_classification_edu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentCoursewareName != null and parentCoursewareName != ''">parent_courseware_name,</if>
+            <if test="coursewareName != null">courseware_name,</if>
+            <if test="coursewareDescription != null">courseware_description,</if>
+            <if test="imageUrl != null">image_url,</if>
+            <if test="sort != null">sort,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentCoursewareName != null and parentCoursewareName != ''">#{parentCoursewareName},</if>
+            <if test="coursewareName != null">#{coursewareName},</if>
+            <if test="coursewareDescription != null">#{coursewareDescription},</if>
+            <if test="imageUrl != null">#{imageUrl},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCoursewareClassificationEdu" parameterType="CoursewareClassificationEdu">
+        update courseware_classification_edu
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentCoursewareName != null">parent_courseware_name = #{parentCoursewareName},</if>
+            <if test="coursewareName != null">courseware_name = #{coursewareName},</if>
+            <if test="coursewareDescription != null">courseware_description = #{coursewareDescription},</if>
+            <if test="imageUrl != null">image_url = #{imageUrl},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCoursewareClassificationEduById" parameterType="Long">
+        update courseware_classification_edu
+        set del_flag = '2'
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteCoursewareClassificationEduByIds" parameterType="String">
+        update courseware_classification_edu set del_flag = '2' where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
