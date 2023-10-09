@@ -24,12 +24,18 @@ public class CaptchaConfig
         properties.setProperty(KAPTCHA_BORDER, "yes");
         // 验证码文本字符颜色 默认为Color.BLACK
         properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_COLOR, "black");
+//        // 验证码图片宽度 默认为200
+//        properties.setProperty(KAPTCHA_IMAGE_WIDTH, "160");
+//        // 验证码图片高度 默认为50
+//        properties.setProperty(KAPTCHA_IMAGE_HEIGHT, "60");
+//        // 验证码文本字符大小 默认为40
+//        properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_SIZE, "38");
         // 验证码图片宽度 默认为200
-        properties.setProperty(KAPTCHA_IMAGE_WIDTH, "160");
+        properties.setProperty(KAPTCHA_IMAGE_WIDTH, "260");
         // 验证码图片高度 默认为50
-        properties.setProperty(KAPTCHA_IMAGE_HEIGHT, "60");
+        properties.setProperty(KAPTCHA_IMAGE_HEIGHT, "80");
         // 验证码文本字符大小 默认为40
-        properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_SIZE, "38");
+        properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_SIZE, "58");
         // KAPTCHA_SESSION_KEY
         properties.setProperty(KAPTCHA_SESSION_CONFIG_KEY, "kaptchaCode");
         // 验证码文本字符长度 默认为5
@@ -55,11 +61,18 @@ public class CaptchaConfig
         // 验证码文本字符颜色 默认为Color.BLACK
         properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_COLOR, "blue");
         // 验证码图片宽度 默认为200
-        properties.setProperty(KAPTCHA_IMAGE_WIDTH, "160");
+//        properties.setProperty(KAPTCHA_IMAGE_WIDTH, "160");
+//        // 验证码图片高度 默认为50
+//        properties.setProperty(KAPTCHA_IMAGE_HEIGHT, "60");
+//        // 验证码文本字符大小 默认为40
+//        properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_SIZE, "35");
+//        // KAPTCHA_SESSION_KEY
+        // 验证码图片宽度 默认为200
+        properties.setProperty(KAPTCHA_IMAGE_WIDTH, "300");
         // 验证码图片高度 默认为50
-        properties.setProperty(KAPTCHA_IMAGE_HEIGHT, "60");
+        properties.setProperty(KAPTCHA_IMAGE_HEIGHT, "220");
         // 验证码文本字符大小 默认为40
-        properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_SIZE, "35");
+        properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_SIZE, "120");
         // KAPTCHA_SESSION_KEY
         properties.setProperty(KAPTCHA_SESSION_CONFIG_KEY, "kaptchaCodeMath");
         // 验证码文本生成器

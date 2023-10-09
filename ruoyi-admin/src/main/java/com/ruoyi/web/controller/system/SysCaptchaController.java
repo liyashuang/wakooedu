@@ -67,7 +67,6 @@ public class SysCaptchaController extends BaseController
             out = response.getOutputStream();
             ImageIO.write(bi, "jpg", out);
             out.flush();
-
         }
         catch (Exception e)
         {

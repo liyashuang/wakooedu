@@ -3,6 +3,8 @@
 <head>
     <th:block th:include="include :: header('修改课件分类')" />
     <th:block th:include="include :: bootstrap-fileinput-css" />
+    <th:block th:include="include :: select2-css" />
+
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
@@ -61,6 +63,8 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: bootstrap-fileinput-js" />
+    <th:block th:include="include :: select2-js" />
+
     <script th:inline="javascript">
         var prefix = ctx + "educationalAdministration/edu";
         $("#form-edu-edit").validate({
@@ -121,42 +125,15 @@
         }
         $(document).ready(function () {
             $.ajax({
-                url: prefix + "/getsAllParentClasses",
+                url: prefix + "/getsAllSubclassNames",
                 type: 'get',
                 success: function (res) {
                     var selectElement = $("#parentCoursewareName"); // 根据你的实际情况选择正确的 select 元素
                     selectElement.empty(); // 清空已有的选项
+                    selectElement.append('<option value="0">顶级</option>'); // 添加默认的选项
                     for (let i = 0; i < res.data.length; i++) {
-                        selectElement.append('<option value="' + res.data[i].id + '">' + res.data[i].coursewareName + '</option>');
+                        selectElement.append('<option value="' + res.data[i].id + '"' + (res.data[i].coursewareName == [[${coursewareClassificationEdu.parentCoursewareName}]] ? 'selected' : '') + '>' + res.data[i].coursewareName + '</option>');
                     }
-                    $.ajax({
-                        url: prefix + "/getsAllSubclassNames",
-                        type: 'get',
-                        success: function (res) {
-                            var selectElement = $("#coursewareName"); // 根据你的实际情况选择正确的 select 元素
-                            selectElement.empty(); // 清空已有的选项
-                            selectElement.append('<option value="">--请选择课件名称--</option>'); // 添加默认的选项
-                            for (let i = 0; i < res.data.length; i++) {
-                                selectElement.append('<option value="' + res.data[i].id + '">' + res.data[i].coursewareName + '</option>');
-                            }
-                            $.ajax({
-                                url: prefix + "/fetchSort",
-                                type: 'get',
-                                success: function (res) {
-                                    var selectElement = $("#sort"); // 根据你的实际情况选择正确的 select 元素
-                                    selectElement.empty(); // 清空已有的选项
-                                    selectElement.append('<option value="">--请选择课件名称--</option>'); // 添加默认的选项
-                                    for (let i = 0; i < res.data.length; i++) {
-                                        if (res.data[i].sort === 0) {
-                                            selectElement.append('<option value="' + res.data[i].sort + '">' + "未设置" + '</option>');
-                                        } else {
-                                            selectElement.append('<option value="' + res.data[i].sort + '">' + res.data[i].sort + '</option>');
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    });
                 }
             });
         });

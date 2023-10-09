@@ -5,15 +5,15 @@ import com.ruoyi.educationalAdministration.domain.HeadPersonnel;
 
 /**
  * 瓦酷人员管理Service接口
- * 
+ *
  * @author wakoo
  * @date 2023-09-21
  */
-public interface IHeadPersonnelService 
+public interface IHeadPersonnelService
 {
     /**
      * 查询瓦酷人员管理
-     * 
+     *
      * @param id 瓦酷人员管理主键
      * @return 瓦酷人员管理
      */
@@ -21,7 +21,7 @@ public interface IHeadPersonnelService
 
     /**
      * 查询瓦酷人员管理列表
-     * 
+     *
      * @param headPersonnel 瓦酷人员管理
      * @return 瓦酷人员管理集合
      */
@@ -29,7 +29,7 @@ public interface IHeadPersonnelService
 
     /**
      * 新增瓦酷人员管理
-     * 
+     *
      * @param headPersonnel 瓦酷人员管理
      * @return 结果
      */
@@ -37,7 +37,7 @@ public interface IHeadPersonnelService
 
     /**
      * 修改瓦酷人员管理
-     * 
+     *
      * @param headPersonnel 瓦酷人员管理
      * @return 结果
      */
@@ -45,7 +45,7 @@ public interface IHeadPersonnelService
 
     /**
      * 批量删除瓦酷人员管理
-     * 
+     *
      * @param ids 需要删除的瓦酷人员管理主键集合
      * @return 结果
      */
@@ -53,7 +53,7 @@ public interface IHeadPersonnelService
 
     /**
      * 删除瓦酷人员管理信息
-     * 
+     *
      * @param id 瓦酷人员管理主键
      * @return 结果
      */

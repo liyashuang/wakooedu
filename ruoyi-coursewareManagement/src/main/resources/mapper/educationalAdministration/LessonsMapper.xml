@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.educationalAdministration.mapper.LessonsMapper">
+    
+    <resultMap type="Lessons" id="LessonsResult">
+        <result property="id"    column="id"    />
+        <result property="sort"    column="sort"    />
+        <result property="title"    column="title"    />
+        <result property="teachingObjectives"    column="teaching_objectives"    />
+        <result property="teachingProcess"    column="teaching_process"    />
+        <result property="classify"    column="classify"    />
+        <result property="parentLessonId"    column="parent_lesson_id"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+    </resultMap>
+
+    <sql id="selectLessonsVo">
+        select id, sort, title, teaching_objectives, teaching_process, classify, parent_lesson_id, status, create_by, create_time, update_by, update_time, remark, user_id, dept_id from lessons
+    </sql>
+
+    <sql id="selectLessonsTwo">
+        SELECT
+            ls.id,
+            ls.sort,
+            ls.title,
+            ls.teaching_objectives,
+            ls.teaching_process,
+            cc.courseware_name AS classify,
+            IFNULL(cce.courseware_name, '') AS parent_lesson_id,
+            ls.STATUS,
+            ls.create_by,
+            ls.create_time,
+            ls.update_by,
+            ls.update_time,
+            ls.remark,
+            ls.user_id,
+            ls.dept_id
+        FROM
+            lessons ls
+                LEFT JOIN lessons le ON le.parent_lesson_id = ls.id
+                INNER JOIN courseware_classification_edu cc ON ls.classify = cc.id
+                LEFT JOIN courseware_classification_edu cce ON ls.parent_lesson_id = cce.id
+    </sql>
+
+    <sql id="selectLessons">
+        SELECT ls.id,ls.title,ls.user_id,ls.dept_id FROM lessons ls
+    </sql>
+
+    <sql id="select">
+        SELECT ls.id,ls.title,ls.user_id,ls.dept_id FROM lessons ls
+    </sql>
+
+    <select id="selectLessonsList" parameterType="Lessons" resultMap="LessonsResult">
+        <include refid="selectLessonsTwo"/>
+        <where>  
+            <if test="id != null "> and ls.id = #{id}</if>
+            <if test="sort != null"> and ls.sort = #{sort}</if>
+            <if test="title != null  and title != ''"> and ls.id = #{title}</if>
+            <if test="teachingObjectives != null  and teachingObjectives != ''"> and ls.teaching_objectives = #{teachingObjectives}</if>
+            <if test="teachingProcess != null  and teachingProcess != ''"> and ls.teaching_process = #{teachingProcess}</if>
+            <if test="classify != null  and classify != ''"> and ls.classify = #{classify}</if>
+            <if test="parentLessonId != null and parentLessonId != ''"> and ls.parent_lesson_id= #{parentLessonId}</if>
+            <if test="status != null  and status != ''"> and ls.status = #{status}</if>
+            <if test="createBy != null  and createBy != ''"> and ls.create_by = #{createBy}</if>
+            <if test="updateBy != null  and updateBy != ''"> and ls.update_by = #{updateBy}</if>
+            <if test="updateTime != null "> and ls.update_time = #{updateTime}</if>
+            <if test="remark != null  and remark != ''"> and ls.remark = #{remark}</if>
+            <if test="userId != null "> and ls.user_id = #{userId}</if>
+            <if test="deptId != null "> and ls.dept_id = #{deptId}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(ls.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(ls.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectLessonsById" parameterType="Long" resultMap="LessonsResult">
+        <include refid="selectLessonsTwo"/>
+        where ls.id = #{id}
+    </select>
+    <select id="queryAllParentClasses" resultType="com.ruoyi.educationalAdministration.domain.Lessons">
+        <include refid="selectLessons"/>
+    </select>
+    <select id="queryAllOrder" parameterType="Lessons" resultMap="LessonsResult">
+        <include refid="selectLessonsTwo"/>
+        GROUP BY ls.parent_lesson_id
+    </select>
+    <select id="querySuperclass" parameterType="Lessons" resultMap="LessonsResult">
+        <include refid="selectLessonsTwo"/>
+        GROUP BY le.sort
+    </select>
+    <insert id="insertLessons" parameterType="Lessons" useGeneratedKeys="true" keyProperty="id">
+        insert into lessons
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentLessonId != null and parentLessonId != ''">parent_lesson_id,</if>
+            <if test="sort != null">sort,</if>
+            <if test="title != null">title,</if>
+            <if test="teachingObjectives != null">teaching_objectives,</if>
+            <if test="teachingProcess != null">teaching_process,</if>
+            <if test="classify != null">classify,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentLessonId != null and parentLessonId != ''">#{parentLessonId},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="title != null">#{title},</if>
+            <if test="teachingObjectives != null">#{teachingObjectives},</if>
+            <if test="teachingProcess != null">#{teachingProcess},</if>
+            <if test="classify != null">#{classify},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLessons" parameterType="Lessons">
+        update lessons
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="teachingObjectives != null">teaching_objectives = #{teachingObjectives},</if>
+            <if test="teachingProcess != null">teaching_process = #{teachingProcess},</if>
+            <if test="classify != null">classify = #{classify},</if>
+            <if test="parentLessonId != null and parentLessonId != ''">parent_lesson_id = #{parentLessonId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLessonsById" parameterType="Long">
+        delete from lessons where id = #{id}
+    </delete>
+
+    <delete id="deleteLessonsByIds" parameterType="String">
+        delete from lessons where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

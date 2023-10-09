@@ -93,4 +93,11 @@ public interface ICoursewareClassificationEduService
      * @return 结果
      */
     public boolean checkLoginNameUnique(CoursewareClassificationEdu coursewareClassificationEdu);
+
+
+    /**
+     * 获取所有父分类
+     * @return 下级分类ID列表
+     */
+    public List<CoursewareClassificationEdu> getsAllTheSuperclassesExceptTheTopLevel();
 }

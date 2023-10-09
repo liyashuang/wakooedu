@@ -2,6 +2,8 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <th:block th:include="include :: header('课件分类列表')"/>
+    <th:block th:include="include :: select2-css" />
+
 </head>
 <body class="gray-bg">
 <div class="container-div">
@@ -15,7 +17,7 @@
                             <div class="form-group">
                                 <label class="font-noraml" id="font-campusUserRelation"
                                        style="width: 100px;">父级课件名称：</label>
-                                <select class="form-campusUserRelation" name="parentCoursewareName"
+                                <select class="form-control" name="parentCoursewareName"
                                         id="parentCoursewareName">
                                 </select>
                             </div>
@@ -23,7 +25,7 @@
                         <li>
                             <div class="form-group">
                                 <label class="font-noraml" id="font-coursewareName" style="width: 100px;">课件名称：</label>
-                                <select class="form-coursewareName" name="coursewareName"
+                                <select class="form-control" name="coursewareName"
                                         id="coursewareName">
                                 </select>
                             </div>
@@ -31,7 +33,7 @@
                         <li>
                             <div class="form-group">
                                 <label class="font-noraml" id="font-sort" style="width: 100px;">排序：</label>
-                                <select class="form-sort" name="sort"
+                                <select class="form-control" name="sort"
                                         id="sort">
                                     <option value="">--请选择排序--</option>
                                 </select>
@@ -59,7 +61,7 @@
                         <li>
                             <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
                                     class="fa fa-search"></i>&nbsp;搜索</a>
-                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                            <a class="btn btn-warning btn-rounded btn-sm" id="reset-all" onclick="$.form.reset()"><i
                                     class="fa fa-refresh"></i>&nbsp;重置</a>
                         </li>
                     </ul>
@@ -91,12 +93,20 @@
     </div>
 </div>
 <th:block th:include="include :: footer"/>
+<th:block th:include="include :: select2-js" />
 
 <script th:inline="javascript">
     var editFlag = [[${@permission.hasPermi('educationalAdministration:edu:edit')}]];
     var removeFlag = [[${@permission.hasPermi('educationalAdministration:edu:remove')}]];
     var prefix = ctx + "educationalAdministration/edu";
     var datas = [[${@dict.getType('sys_normal_disable')}]];
+
+    $("#reset-all").click(function(){
+        $("#select2-parentCoursewareName-container").text("--请选择父级课件名称--")
+        $("#select2-coursewareName-container").text("--请选择课件名称--")
+        $("#select2-sort-container").text("--请选择课件名称--")
+    });
+
 
     $(function () {
         var options = {
@@ -214,7 +224,7 @@
                             success: function (res) {
                                 var selectElement = $("#sort"); // 根据你的实际情况选择正确的 select 元素
                                 selectElement.empty(); // 清空已有的选项
-                                selectElement.append('<option value="">--请选择课件名称--</option>'); // 添加默认的选项
+                                selectElement.append('<option value="">--请选择--</option>'); // 添加默认的选项
                                 for (let i = 0; i < res.data.length; i++) {
                                     if (res.data[i].sort === 0) {
                                         selectElement.append('<option value="' + res.data[i].sort + '">' + "未设置" + '</option>');

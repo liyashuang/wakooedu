@@ -102,6 +102,23 @@
         select id,courseware_name
         from courseware_classification_edu where courseware_name=#{name} and del_flag = '0' limit 1;
     </select>
+    <select id="getsAllTheSuperclassesExceptTheTopLevel" parameterType="CoursewareClassificationEdu" resultMap="CoursewareClassificationEduResult">
+        select cc.parent_courseware_name AS id,
+               ce.courseware_name as parent_courseware_name,
+               cc.courseware_name,
+               cc.courseware_description,
+               cc.image_url,
+               cc.sort,
+               cc.status,
+               cc.create_by,
+               cc.create_time,
+               cc.update_by,
+               cc.update_time,
+               cc.remark
+        from courseware_classification_edu cc
+                 JOIN courseware_classification_edu ce ON cc.parent_courseware_name = ce.id
+        WHERE cc.parent_courseware_name!='顶级'
+    </select>
 
     <insert id="insertCoursewareClassificationEdu" parameterType="CoursewareClassificationEdu" useGeneratedKeys="true"
             keyProperty="id">

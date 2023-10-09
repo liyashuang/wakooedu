@@ -95,7 +95,6 @@ public class CoursewareClassificationEduController extends BaseController
     {
         coursewareClassificationEdu.setCreateBy(ShiroUtils.getLoginName());
         coursewareClassificationEdu.setUserId(getUserId());
-        System.out.println(getUserId());
         coursewareClassificationEdu.setDeptId(getSysUser().getDeptId());
         return toAjax(coursewareClassificationEduService.insertCoursewareClassificationEdu(coursewareClassificationEdu));
     }
@@ -109,6 +108,7 @@ public class CoursewareClassificationEduController extends BaseController
     {
         CoursewareClassificationEdu coursewareClassificationEdu = coursewareClassificationEduService.selectCoursewareClassificationEduById(id);
         mmap.put("coursewareClassificationEdu", coursewareClassificationEdu);
+        System.out.println(mmap);
         return prefix + "/edit";
     }
 

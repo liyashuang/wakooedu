@@ -83,4 +83,10 @@ public interface CoursewareClassificationEduMapper
      * @return
      */
     public CoursewareClassificationEdu checkCampusNameUnique(String name);
+
+    /**
+     * 获取所有父分类
+     * @return 下级分类ID列表
+     */
+    public List<CoursewareClassificationEdu> getsAllTheSuperclassesExceptTheTopLevel();
 }

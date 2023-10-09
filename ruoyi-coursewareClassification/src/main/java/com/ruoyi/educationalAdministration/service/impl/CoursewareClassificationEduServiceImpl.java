@@ -132,5 +132,10 @@ public class CoursewareClassificationEduServiceImpl implements ICoursewareClassi
         return UserConstants.UNIQUE;
     }
 
+    @Override
+    public List<CoursewareClassificationEdu> getsAllTheSuperclassesExceptTheTopLevel() {
+        return coursewareClassificationEduMapper.getsAllTheSuperclassesExceptTheTopLevel();
+    }
+
 
 }
