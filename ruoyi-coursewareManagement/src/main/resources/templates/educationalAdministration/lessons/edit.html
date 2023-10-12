@@ -8,7 +8,7 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-lessons-edit" th:object="${lessons}">
-            <input name="id" th:field="*{id}" type="hidden">
+            <input name="id" id="id" th:field="*{id}" type="hidden">
             <div class="form-group">
                 <label class="col-sm-3 control-label">父类课件：</label>
                 <div class="col-sm-8">
@@ -70,6 +70,29 @@
     <script th:inline="javascript">
         var prefix = ctx + "educationalAdministration/lessons";
         $("#form-lessons-edit").validate({
+            onkeyup: false,
+            rules:{
+                title:{
+                    remote: {
+                        url: prefix + "/checkCampusNameUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "id": function() {
+                                return $("#id").val();
+                            },
+                            "title": function() {
+                                return $.common.trim($("#title").val());
+                            }
+                        }
+                    }
+                },
+            },
+            messages: {
+                "title":{
+                    remote: "课件名称重复"
+                }
+            },
             focusCleanup: true
         });
         let input = document.getElementById('sort');

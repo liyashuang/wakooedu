@@ -78,4 +78,12 @@ public interface LessonsMapper
      * @return 父类集合
      */
     public List<Lessons> querySuperclass();
+
+    /**
+     * 校验名称是否唯一
+     *
+     * @param title 课件
+     * @return 结果
+     */
+    public Lessons checkPhoneUnique(String title);
 }

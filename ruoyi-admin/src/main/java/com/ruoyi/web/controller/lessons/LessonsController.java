@@ -1,7 +1,9 @@
 package com.ruoyi.web.controller.lessons;
 
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.ShiroUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.educationalAdministration.domain.HeadPersonnel;
 import com.ruoyi.educationalAdministration.domain.Lessons;
 import com.ruoyi.educationalAdministration.service.ICoursewareClassificationEduService;
 import com.ruoyi.educationalAdministration.service.ILessonsService;
@@ -56,7 +58,6 @@ public class LessonsController extends BaseController
     @ResponseBody
     public TableDataInfo list(Lessons lessons)
     {
-        System.out.println(lessons);
         startPage();
         List<Lessons> list = lessonsService.selectLessonsList(lessons);
         return getDataTable(list);
@@ -121,7 +122,8 @@ public class LessonsController extends BaseController
     @ResponseBody
     public AjaxResult editSave(Lessons lessons)
     {
-        System.out.println(lessons);
+        lessons.setUpdateBy(ShiroUtils.getLoginName());
+        lessons.setUpdateTime(DateUtils.getNowDate());
         return toAjax(lessonsService.updateLessons(lessons));
     }
 
@@ -157,5 +159,22 @@ public class LessonsController extends BaseController
     @ResponseBody
     public AjaxResult getsTheExcludedParentClass(){
         return AjaxResult.success(iCoursewareClassificationEduService.getsAllTheSuperclassesExceptTheTopLevel());
+    }
+
+    /**
+     * 校验父类
+     * @param lessons *
+     * @return *
+     */
+    @PostMapping("/checkCampusNameUnique")
+    @ResponseBody
+    public boolean checkCampusNameUnique(Lessons lessons)
+    {
+        return lessonsService.checkPhoneUnique(lessons);
+    }
+
+    @RequestMapping("/less")
+    public String less(){
+        return prefix + "/lessons";
     }
 }

@@ -1,7 +1,11 @@
 package com.ruoyi.educationalAdministration.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.common.annotation.DataScope;
+import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.educationalAdministration.mapper.LessonsMapper;
@@ -42,6 +46,7 @@ public class LessonsServiceImpl implements ILessonsService
      * @return 课件管理
      */
     @Override
+    @DataScope(userAlias = "ls")
     public List<Lessons> selectLessonsList(Lessons lessons)
     {
         return lessonsMapper.selectLessonsList(lessons);
@@ -97,11 +102,19 @@ public class LessonsServiceImpl implements ILessonsService
         return lessonsMapper.deleteLessonsById(id);
     }
 
+    /**
+     *  查询所有父类
+     * @return   结果
+     */
     @Override
     public List<Lessons> queryAllParentClasses() {
         return lessonsMapper.queryAllParentClasses();
     }
 
+    /**
+     * 查询所有订单
+     * @return 结果
+     */
     @Override
     public List<Lessons> queryAllOrder() {
         return lessonsMapper.queryAllOrder();
@@ -110,6 +123,22 @@ public class LessonsServiceImpl implements ILessonsService
     @Override
     public List<Lessons> querySuperclass() {
         return lessonsMapper.querySuperclass();
+    }
+
+    /**
+     * 校验课件管理接收的电话是否唯一
+     * @param lessons 课件
+     * @return 结果
+     */
+    @Override
+    public boolean checkPhoneUnique(Lessons lessons) {
+        Long userId = StringUtils.isNull(lessons.getId()) ? -1L : lessons.getId();
+        Lessons info = lessonsMapper.checkPhoneUnique(lessons.getTitle());
+        if (StringUtils.isNotNull(info) && info.getId().longValue() != userId.longValue())
+        {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
     }
 
 }

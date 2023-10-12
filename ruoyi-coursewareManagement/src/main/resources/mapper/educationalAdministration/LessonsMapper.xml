@@ -20,6 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark"    column="remark"    />
         <result property="userId"    column="user_id"    />
         <result property="deptId"    column="dept_id"    />
+        <result property="attCount"    column="att_count"    />
     </resultMap>
 
     <sql id="selectLessonsVo">
@@ -49,6 +50,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 INNER JOIN courseware_classification_edu cc ON ls.classify = cc.id
                 LEFT JOIN courseware_classification_edu cce ON ls.parent_lesson_id = cce.id
     </sql>
+    <sql id="selectLessonsThree">
+        SELECT
+            ls.id,
+            ls.sort,
+            ls.title,
+            ls.teaching_objectives,
+            ls.teaching_process,
+            cc.courseware_name AS classify,
+            IFNULL(cce.courseware_name, '') AS parent_lesson_id,
+            ls.STATUS,
+            ls.create_by,
+            ls.create_time,
+            ls.update_by,
+            ls.update_time,
+            ls.remark,
+            ls.user_id,
+            ls.dept_id,
+            ls.del_flag,
+            att_count
+        FROM
+            lessons ls
+                LEFT JOIN lessons le ON le.parent_lesson_id = ls.id
+                INNER JOIN courseware_classification_edu cc ON ls.classify = cc.id
+                LEFT JOIN courseware_classification_edu cce ON ls.parent_lesson_id = cce.id
+                LEFT JOIN (
+                SELECT lessons_id, COUNT(lessons_id) AS att_count FROM attachment GROUP BY lessons_id
+            ) att ON att.lessons_id = ls.id
+    </sql>
 
     <sql id="selectLessons">
         SELECT ls.id,ls.title,ls.user_id,ls.dept_id FROM lessons ls
@@ -59,8 +88,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectLessonsList" parameterType="Lessons" resultMap="LessonsResult">
-        <include refid="selectLessonsTwo"/>
-        <where>  
+        <include refid="selectLessonsThree"/>
+        <where>
+            ls.del_flag = '0'
             <if test="id != null "> and ls.id = #{id}</if>
             <if test="sort != null"> and ls.sort = #{sort}</if>
             <if test="title != null  and title != ''"> and ls.id = #{title}</if>
@@ -81,6 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
                 AND date_format(ls.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
             </if>
+            ${params.dataScope}
         </where>
     </select>
     
@@ -90,6 +121,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="queryAllParentClasses" resultType="com.ruoyi.educationalAdministration.domain.Lessons">
         <include refid="selectLessons"/>
+        <where>ls.del_flag = '0'</where>
     </select>
     <select id="queryAllOrder" parameterType="Lessons" resultMap="LessonsResult">
         <include refid="selectLessonsTwo"/>
@@ -97,7 +129,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="querySuperclass" parameterType="Lessons" resultMap="LessonsResult">
         <include refid="selectLessonsTwo"/>
-        GROUP BY le.sort
+        <where> ls.del_flag = '0'</where>
+        GROUP BY ls.sort
+    </select>
+    <select id="checkPhoneUnique" parameterType="String" resultMap="LessonsResult">
+        select id,title from lessons where title=#{title} and del_flag = '0' limit 1
     </select>
     <insert id="insertLessons" parameterType="Lessons" useGeneratedKeys="true" keyProperty="id">
         insert into lessons
@@ -157,12 +193,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteLessonsById" parameterType="Long">
-        delete from lessons where id = #{id}
+        update lessons
+        set del_flag = '2'
+        where id = #{id}
     </delete>
 
     <delete id="deleteLessonsByIds" parameterType="String">
-        delete from lessons where id in 
-        <foreach item="id" collection="array" open="(" separator="," close=")">
+        update lessons set del_flag = '2' where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>

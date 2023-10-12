@@ -55,7 +55,18 @@ public class Lessons extends BaseEntity
     @Excel(name = "部门id")
     private Long deptId;
 
-    public void setId(Long id) 
+    @Excel(name = "附件数量")
+    private Integer attCount;
+
+    public Integer getAttCount() {
+        return attCount;
+    }
+
+    public void setAttCount(Integer attCount) {
+        this.attCount = attCount;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }

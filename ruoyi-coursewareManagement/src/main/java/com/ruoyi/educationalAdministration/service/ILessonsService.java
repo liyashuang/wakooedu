@@ -1,6 +1,8 @@
 package com.ruoyi.educationalAdministration.service;
 
 import java.util.List;
+
+import com.ruoyi.educationalAdministration.domain.CoursewareClassificationEdu;
 import com.ruoyi.educationalAdministration.domain.Lessons;
 
 /**
@@ -77,4 +79,11 @@ public interface ILessonsService
      */
     public List<Lessons> querySuperclass();
 
+    /**
+     * 校验名称是否唯一
+     *
+     * @param lessons 课件
+     * @return 结果
+     */
+    public boolean checkPhoneUnique(Lessons lessons);
 }

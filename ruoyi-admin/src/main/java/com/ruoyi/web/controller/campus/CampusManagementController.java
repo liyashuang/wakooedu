@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.utils.ShiroUtils;
+import com.ruoyi.educationalAdministration.domain.Lessons;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -132,4 +133,18 @@ public class CampusManagementController extends BaseController
     {
         return toAjax(campusManagementService.deleteCampusManagementByIds(ids));
     }
+
+
+    /**
+     * 校验是否唯一
+     * @param campusManagement *
+     * @return *
+     */
+    @PostMapping("/checkCampusNameUnique")
+    @ResponseBody
+    public boolean checkCampusNameUnique(CampusManagement campusManagement)
+    {
+        return campusManagementService.campusNameUnique(campusManagement);
+    }
+
 }

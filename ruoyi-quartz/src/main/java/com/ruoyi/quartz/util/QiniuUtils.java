@@ -10,9 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+/**七牛工具类
+ *
+ * @author HASEE
+ */
 public class QiniuUtils {
 
-    public static String uploadAvatar(MultipartFile file, String accessKey, String secretKey, String bucketName, String folderPath, HttpServletRequest request) throws IOException {
+    public static String uploadAvatar(MultipartFile file, String accessKey, String secretKey, String bucketName, String folderPath) throws IOException {
             try {
                 // 创建七牛云配置对象
                 Configuration cfg = new Configuration();

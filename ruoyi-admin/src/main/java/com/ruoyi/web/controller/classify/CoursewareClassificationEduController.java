@@ -169,4 +169,5 @@ public class CoursewareClassificationEduController extends BaseController
     {
         return coursewareClassificationEduService.checkLoginNameUnique(coursewareClassificationEdu);
     }
+
 }
